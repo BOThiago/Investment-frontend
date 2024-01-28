@@ -1,16 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { AiOutlineHome } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FaEthereum } from "react-icons/fa";
-import { Button } from "./Button";
-import { signOut } from "next-auth/react";
+import { AiOutlineHome } from "react-icons/ai";
 import { TbCardsFilled } from "react-icons/tb";
-import ThemeSwitch from "./ThemeSwitch";
 import { FaChartArea } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
+import { FaEthereum } from "react-icons/fa";
+import { signOut } from "next-auth/react";
 import { IoHome } from "react-icons/io5";
+import { Button } from "./Button";
 import UserDropdown from "./UserDropdown";
+import ThemeSwitch from "./ThemeSwitch";
 
 const Navbar = ({ session }: any) => {
     const [isOpen, setIsOpen] = useState(false);

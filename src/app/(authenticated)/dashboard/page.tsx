@@ -1,12 +1,12 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { Login } from "../../components/Login";
-import Navbar from "../../components/Navbar";
+import { useRouter } from "next/navigation";
 import { Loading } from "../../components/Loading";
-import ResponsiveAppBar from "../../components/navbar2";
+import Navbar from "../../components/Navbar";
 
 export default function Home() {
     const { data: session, status } = useSession();
+    const router = useRouter();
 
     if (status === "loading") return <Loading />;
 
@@ -19,7 +19,7 @@ export default function Home() {
                 </div>
             </div>
         );
+    } else {
+        router.push("/");
     }
-
-    return <Login />;
 }
