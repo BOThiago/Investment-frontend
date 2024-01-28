@@ -2,12 +2,11 @@
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Loading } from "./Loading";
 
 const GoogleSigninButton = () => {
     const router = useRouter();
 
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
 
     useEffect(() => {
         if (session) {
