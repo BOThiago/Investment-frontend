@@ -1,13 +1,13 @@
 "use client";
-import { Button } from "@mui/material";
+import { LinkComponent } from "../../components/Link";
+import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { Form } from "../../components/Form";
 import { Logo } from "../../components/Logo";
-import { LinkComponent } from "../../components/Link";
 import GoogleSigninButton from "../../components/GoogleSigninButton";
 import ThemeSwitch from "../../components/ThemeSwitch";
 
-export const Signup = () => {
+export default function Signup() {
     return (
         <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
             <div className="w-full p-6 lg:px-6 lg:py-2 bg-gradient-to-tr from-gray-300 via-gray-400 to-gray-200 rounded-md shadow-md lg:max-w-xl">
@@ -49,4 +49,4 @@ export const Signup = () => {
             </div>
         </div>
     );
-};
+}
