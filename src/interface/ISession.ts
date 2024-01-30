@@ -1,0 +1,3 @@
+interface ISession {
+    user: IUser
+}
