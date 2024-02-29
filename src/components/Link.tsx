@@ -1,10 +1,14 @@
-// import Link from "next/link";
 import { Link } from "react-router-dom";
 
-export const LinkComponent = ({ title, href }: any) => {
-  return (
-    <Link to={href} className="font-medium text-purple-700 hover:underline">
-      {title}
-    </Link>
-  );
+interface LinkInterface {
+    title: string;
+    href: string;
+}
+
+export const LinkComponent = ({ title, href }: LinkInterface) => {
+    return (
+        <Link to={href} className="font-medium text-purple-700 hover:underline">
+            {title}
+        </Link>
+    );
 };

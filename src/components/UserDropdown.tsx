@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+import Cookies from "js-cookie";
 import {
-    Avatar,
     Box,
     IconButton,
     Menu,
@@ -23,36 +23,41 @@ export default function UserDropdown() {
         setAnchorElUser(null);
     };
 
+    const picture = Cookies.get("picture");
+    const username = Cookies.get("name");
+
     return (
         <>
             <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar
-                            alt="Remy Sharp"
-                            src="/static/images/avatar/2.jpg"
+                        <img
+                            src={picture}
+                            alt={username}
+                            width={50}
+                            className="rounded-full"
                         />
                     </IconButton>
                 </Tooltip>
                 <Menu
-                    sx={{ mt: "45px" }}
+                    sx={{ mt: "65px" }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
                     anchorOrigin={{
                         vertical: "top",
-                        horizontal: "right",
+                        horizontal: "center",
                     }}
                     keepMounted
                     transformOrigin={{
                         vertical: "top",
-                        horizontal: "right",
+                        horizontal: "center",
                     }}
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                 >
                     {settings.map((setting) => (
                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">
+                            <Typography flex={1} textAlign="center">
                                 {setting}
                             </Typography>
                         </MenuItem>

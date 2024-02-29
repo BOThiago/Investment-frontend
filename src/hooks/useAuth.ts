@@ -1,28 +1,49 @@
-import { useRecoilValue } from "recoil";
-import { accessTokenSatate, refreshTokenState } from "../state/atom";
-import axios, { AxiosResponse } from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
-// Adicionar aqui a verificacao com o refreshToken
 export const useAuth = () => {
-  const accessToken = useRecoilValue(accessTokenSatate);
-  const refreshToken = useRecoilValue(refreshTokenState);
+    const navigate = useNavigate();
+    const accessToken = Cookies.get("accessToken");
+    const refreshToken = Cookies.get("refreshToken") || "";
 
-  return async() => await axios
-    .post(`http://localhost:5050/`, {
-      accessToken,
-      refreshToken,
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        return true;
-      }
-    })
-    .catch((err: AxiosResponse<any, any>) => {
-      if (err?.status === 401) {
-        return false;
-      } else {
-        console.error(err);
-        return true;
-      }
-    });
+    if (!accessToken || !refreshToken) {
+        navigate("/");
+        return;
+    }
+
+    return async () => {
+        const requestBody = JSON.stringify({
+            accessToken,
+            refreshToken,
+        });
+
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_SERVER_URL}/authentication`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: requestBody,
+                }
+            );
+
+            if (response.status === 201) {
+                return { sucess: true, message: "Usuário Autenticado!" };
+            } else {
+                navigate("/");
+                return {
+                    sucess: false,
+                    message: "Token inválido ou expirado!",
+                };
+            }
+        } catch (error) {
+            navigate("/");
+            return {
+                sucess: false,
+                message: "Internal Server Error!",
+            };
+        }
+    };
 };
