@@ -1,26 +1,26 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineHome } from "react-icons/ai";
 import { TbCardsFilled } from "react-icons/tb";
 import { FaChartArea } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
 import { FaEthereum } from "react-icons/fa";
-// import { signOut } from "next-auth/react";
+import { useSignOut } from "../hooks/useSignOut";
+import { ISession } from "../interface/ISession";
 import { IoHome } from "react-icons/io5";
 import { Button } from "./Button";
 import UserDropdown from "./UserDropdown";
 import ThemeSwitch from "./ThemeSwitch";
-import { useSignOut } from "../hooks/useSignOut";
 
 interface Props {
-    session: ISession
+    session: ISession;
 }
 
 const Navbar = ({ session }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    const signOut = useSignOut()
+    const signOut = useSignOut();
 
     const sideList = [
         {
@@ -43,16 +43,20 @@ const Navbar = ({ session }: Props) => {
 
     const navList = [
         {
-            icon: <AiOutlineHome className="text-2xl mr-2" />,
-            title: "item 1",
+            icon: <IoHome className="text-2xl" />,
+            title: "FIIs",
         },
         {
-            icon: <AiOutlineHome className="text-2xl" />,
-            title: "item 2",
+            icon: <FaChartArea className="text-2xl" />,
+            title: "Ações",
         },
         {
-            icon: <AiOutlineHome className="text-2xl" />,
-            title: "item 3",
+            icon: <IoNewspaper className="text-2xl" />,
+            title: "Renda Fixa",
+        },
+        {
+            icon: <FaEthereum className="text-2xl" />,
+            title: "Criptomoedas",
         },
     ];
 
@@ -61,8 +65,8 @@ const Navbar = ({ session }: Props) => {
     };
 
     useEffect(() => {
-        const handleEscKeyPress = (e: any) => {
-            if (e.keyCode === 27 && isOpen) {
+        const handleEscKeyPress = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && isOpen) {
                 setIsOpen(false);
             }
         };
@@ -82,7 +86,7 @@ const Navbar = ({ session }: Props) => {
 
     return (
         <>
-            <nav className="flex w-full items-center justify-between px-6 h-20 bg-gradient-to-tr bg-zinc-900 text-zinc-700 dark:bg-gray-200 dark:text-black border-b-1 border-black dark:border-white z-10">
+            <nav className="flex w-full mb-10 items-center justify-between px-6 h-20 bg-gradient-to-tr border-b-[1px] dark:border-white bg-zinc-900 text-zinc-700 dark:bg-gray-200 dark:text-black z-10">
                 <div className="flex items-center gap-2">
                     <button
                         className="mr-1"
@@ -103,14 +107,14 @@ const Navbar = ({ session }: Props) => {
                     </h3>
                 </div>
 
-                <div className="flex items-center">
-                    <div className="hidden md:flex md:justify-between md:bg-transparent items-center gap-6">
+                <div className="flex items-center w-full h-full px-8 justify-end gap-2">
+                    <div className="hidden md:flex md:justify-end md:bg-transparent items-center">
                         {navList.map(({ icon, title }, index) => {
                             return (
                                 <button
                                     key={index}
                                     title="Wishlist"
-                                    className="flex items-center p-3 font-medium mr-2 text-center bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:bg-gray-400"
+                                    className="flex items-center justify-center w-fit hover:bg-zinc-800 hover:shadow-lg text-white p-3 font-medium text-center rounded focus:outline-none gap-2 mx-2"
                                 >
                                     <span>{icon}</span>
                                     <span>{title}</span>
@@ -118,8 +122,8 @@ const Navbar = ({ session }: Props) => {
                             );
                         })}
                     </div>
-                    <UserDropdown />
                     <ThemeSwitch />
+                    <UserDropdown />
                 </div>
 
                 {isOpen && (
@@ -133,10 +137,11 @@ const Navbar = ({ session }: Props) => {
                 )}
 
                 <aside
-                    className={`transform top-0 left-0 w-64 bg-gray-100 dark:bg-zinc-700 fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30 ${isOpen ? "translate-x-0" : "-translate-x-full"
-                        }`}
+                    className={`transform top-0 left-0 w-64 bg-gray-100 dark:bg-zinc-800 fixed h-full overflow-auto ease-in-out transition-all duration-200 z-30 ${
+                        isOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
                 >
-                    <span className="flex w-full items-center p-3 border-b">
+                    <span className="flex w-full items-center p-3 border-b border-black dark:border-white">
                         <TbCardsFilled
                             width={5}
                             height={5}
@@ -152,27 +157,27 @@ const Navbar = ({ session }: Props) => {
                         return (
                             <span
                                 key={index}
-                                className="flex items-center p-8 hover:bg-purple-700 hover:text-white dark:text-white"
+                                className="flex items-center p-8 hover:bg-purple-700 text-black hover:text-white dark:text-white"
                             >
                                 <span className="mr-2">{icon}</span>{" "}
-                                <span className="text-md font-semibold">
+                                <span className="text-md font-bold">
                                     {title}
                                 </span>
                             </span>
                         );
                     })}
 
-                    <div className="fixed bottom-0 w-full border-t border-black dark:border-white">
+                    <div className="fixed bottom-0 w-full border-t border-black dark:border-white bg-gray-100 dark:bg-zinc-800">
                         <div className="flex items-center p-4 text-white bg-gray-20 w-full">
                             <div className="flex gap-4 ml-auto justify-around w-full">
                                 <Button
                                     title={`Olá, ${session.user.name}`}
-                                    className="text-black p-2 w-max dark:text-white"
+                                    className="text-black font-semibold p-2 w-max dark:text-white"
                                 />
                                 <Button
                                     title="Sair"
                                     onClick={() => signOut()}
-                                    className="text-white bg-red-900 p-2 w-24 rounded-md"
+                                    className="text-white bg-red-900 hover:bg-red-950 w-24 rounded-lg"
                                 />
                             </div>
                         </div>

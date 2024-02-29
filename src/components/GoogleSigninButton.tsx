@@ -1,12 +1,44 @@
-import { useEffect } from "react";
-import {useNavigate} from 'react-router-dom'
-import { googleLogin } from "../hooks/useGoogleLogin";
+import { accessTokenSatate, refreshTokenState } from "../state/atom";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useSetRecoilState } from "recoil";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const GoogleSigninButton = () => {
+    const setAccessTokenState = useSetRecoilState(accessTokenSatate);
+    const setRefreshTokenState = useSetRecoilState(refreshTokenState);
+    const navigate = useNavigate();
 
-    const login = googleLogin()
+    const login = useGoogleLogin({
+        flow: "auth-code",
+        onSuccess: async (codeResponse) => {
+            const response = await axios.post(
+                `${
+                    import.meta.env.VITE_SERVER_URL
+                }/authentication/oauth/google`,
+                {
+                    code: codeResponse.code,
+                }
+            );
 
-    const navigate = useNavigate()
+            if (response.status === 201) {
+                Cookies.set("accessToken", response.data.tokens.access_token);
+                setAccessTokenState(response.data.tokens.access_token);
+                Cookies.set(
+                    "refreshToken",
+                    response.data.refreshToken
+                        ? response.data.refreshToken
+                        : response.data.tokens.refresh_token
+                );
+                setRefreshTokenState(response.data.tokens.refresh_token);
+                Cookies.set("name", response.data.userData.name),
+                    Cookies.set("email", response.data.userData.email),
+                    Cookies.set("picture", response.data.userData.picture),
+                    navigate("/dashboard");
+            }
+        },
+    });
 
     return (
         <div className="flex mt-6 gap-x-2">
@@ -14,7 +46,6 @@ const GoogleSigninButton = () => {
                 type="button"
                 onClick={login}
                 className="flex items-center justify-center w-full p-2 border border-purple-600 rounded-md focus:ring-2 focus:ring-offset-1 focus:ring-violet-600 hover:bg-purple-100"
-                // onClick={handleSignIn}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

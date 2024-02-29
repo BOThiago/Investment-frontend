@@ -1,26 +1,45 @@
-// "Middleware" de verificacao de usuario
-
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const AuthPage = () => {
-  const auth = useAuth();
-  const [isLogged, setIsLogged] = useState<boolean>();
+function AuthPage() {
+    const [isLogged, setIsLogged] = useState<boolean>(false);
+    const [loading, setLoading] = useState(true);
+    const auth = useAuth();
 
-  const verifyUser = async () => {
-    await auth().then((response: boolean | undefined) => {
-      setIsLogged(response);
-    });
-  };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (auth) {
+                    const response = await auth();
+                    if (response.sucess) setIsLogged(response.sucess);
+                }
+            } catch (error) {
+                console.error("Error during authentication:", error);
+                setIsLogged(false);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  useLayoutEffect(() => {
-    verifyUser()
-  }, []);
+        fetchData();
+    }, [auth]);
 
-  if(isLogged !== undefined) {
-    return <>{isLogged ? <Outlet/> : <Navigate to={"/login"} />}</>;
-  }
-};
+    if (loading) {
+        return null;
+    }
+
+    return (
+        <>
+            {isLogged ? (
+                <Outlet />
+            ) : (
+                <div>
+                    <Navigate to="/login" />{" "}
+                </div>
+            )}
+        </>
+    );
+}
 
 export default AuthPage;
